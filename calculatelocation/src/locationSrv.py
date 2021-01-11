@@ -39,6 +39,7 @@ def service_callback(req):
     # create an instance of String object
     result = String()
     result.data = quadrant
+    # calculate the distance from the origin
     distanceFromOrigin = math.sqrt(req.x**2 + req.y**2)
 
     # create a Response message and return to the server
