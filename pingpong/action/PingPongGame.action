@@ -1,0 +1,11 @@
+#goal
+int64 maxScore
+---
+#result
+std_msgs/String winner
+std_msgs/Duration gameDuration
+int32[] score
+---
+#feedback
+int64 playerClient
+int64 playerServer
