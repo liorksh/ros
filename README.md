@@ -19,5 +19,7 @@ $ catkin_make
 #make the python file as executable<br>
 $ sudo chmod +x ./src/chatwithme/src/talker.py
 $ sudo chmod +x ./src/chatwithme/src/listener.py
+```
+Read the full article about [the foundations of ROS programming](https://liorshalom.com/2020/12/23/robot-operation-system-ros/)
 
 
