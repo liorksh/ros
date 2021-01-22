@@ -7,8 +7,6 @@ from pingpong.msg import *
 
 class PingPongClient:
     
-    clientStatus = 0
-
     def __init__(self):
         self.serverName = 'myPingPongGame'
 
@@ -39,6 +37,7 @@ class PingPongClient:
         goal = PingPongGameGoal()
         goal.maxScore = maxScore
 
+        # initiate the client with all the callback methods
         self.actionClient.send_goal(goal,
             active_cb=self.action_active,
             done_cb=self.action_returnGoal,
@@ -68,7 +67,6 @@ class PingPongClient:
                 result.score[0], result.score[1])           
         elif statusInt==actionlib.GoalStatus.PREEMPTED:
             rospy.logwarn('This goal of this client was aborted')
-        clientStatus = 1
 
     def action_returnFeedback(self, score):
         rospy.loginfo('Current Score: Client[%s], Server[%s]', score.playerClient, score.playerServer)
