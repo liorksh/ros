@@ -9,11 +9,13 @@ import random
 from pingpong.msg import *
 
 class PingPongServer:
-    _allowNewGoals = False
+    ALLOW_NEW_GOALS = 1
+    ALLOW_PREEMPT   = 2
+    _serverFlags = 0
 
-    def __init__(self, allowNewGoals):
+    def __init__(self, allowInterruptions):
         self.serviceName = 'myPingPongGame'
-        self._allowNewGoals = allowNewGoals
+        self._serverFlags = allowInterruptions
     def run_service(self):
 
         # the name of the node is static, there be only one isstance of a service.
@@ -42,13 +44,13 @@ class PingPongServer:
         gameOn = True
 
         while gameOn:
-            if self._allowNewGoals and self.actionServer.is_new_goal_available():
+            if self._serverFlags & self.ALLOW_NEW_GOALS and self.actionServer.is_new_goal_available():
                 # receiving a new goal triggers also a 'is_preempt_requested', therefore is should be handled first.
                 goal = self.actionServer.accept_new_goal()
                 # reset the previous feedback object
                 feedback = PingPongGameFeedback()
                 rospy.loginfo('Received a new score: %s',goal.maxScore)
-            elif self._allowNewGoals and self.actionServer.is_preempt_requested():
+            elif self._serverFlags & self.ALLOW_PREEMPT and self.actionServer.is_preempt_requested():
                 rospy.loginfo('received preempt request')
                 # changes the status of the server, otherwise the server will be exited with an error
                 # since there's no return value and a preempt request was received.
@@ -67,7 +69,7 @@ class PingPongServer:
                 rospy.sleep(1)
     
         #rospy.loginfo('self.actionServer.preempt_request value is %s', self.actionServer.preempt_request)
-        if self.actionServer.preempt_request==False:
+        if self._serverFlags==0 or self.actionServer.preempt_request==False:
             endTime = rospy.get_rostime()
 
             gameDuration = endTime-startTime
@@ -95,12 +97,12 @@ if __name__ == '__main__':
     try:
         # initiate the flag whether the server accepts new goals or cancellation messages
         if len(sys.argv)==2:
-            allowNewGoals = (int(sys.argv[1])==1)
+            serverFlags = int(sys.argv[1])
         else:
-            allowNewGoals = False
+            serverFlags = 0
 
         # call a methos to load the service
-        server = PingPongServer(allowNewGoals)
+        server = PingPongServer(serverFlags)
         server.run_service()
     except rospy.ROSInterruptException:
         pass
