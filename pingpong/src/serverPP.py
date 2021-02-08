@@ -69,6 +69,7 @@ class PingPongServer:
                 rospy.sleep(1)
     
         #rospy.loginfo('self.actionServer.preempt_request value is %s', self.actionServer.preempt_request)
+        # when the loop ends - set goal to succeed when required
         if self._serverFlags==0 or self.actionServer.preempt_request==False:
             endTime = rospy.get_rostime()
 
